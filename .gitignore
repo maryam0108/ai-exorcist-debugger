@@ -1,0 +1,17 @@
+# Node dependencies
+node_modules/
+
+# Python environment
+venv/
+.env
+
+# Logs
+*.log
+
+# Build artifacts
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
