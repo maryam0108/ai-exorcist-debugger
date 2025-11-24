@@ -1,0 +1,17 @@
+name: ai_exorcist_debugger
+description: >
+  A spec that teaches Kiro how to expand static analysis rules,
+  generate spooky error detectors, and maintain the analyzer system.
+
+inputs:
+  - code
+
+outputs:
+  - issues
+
+behaviors:
+  - Identify logic bugs
+  - Explain spooky reasoning
+  - Suggest fixes
+  - Return structured JSON
+  - Follow the Exorcist theme

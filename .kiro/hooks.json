@@ -1,3 +1,5 @@
 {
-    "_comment": "For connecting Kiro logic to code scanners"
+    "_comment": "For connecting Kiro logic to code scanners",
+    "version": 1,
+    "hooks": []
 }

@@ -1,1 +1,22 @@
 # (Will hold your app’s AI functions)
+
+name: ai_exorcist_debugger
+description: AI Exorcist Debugger Code Analyzer
+
+functions:
+  - name: analyze_code_demons
+    description: Analyze user-submitted code and identify possible "demons" (bugs, smells)
+    parameters:
+      type: object
+      properties:
+        code:
+          type: string
+          description: The source code to analyze
+      required: [code]
+    returns:
+      type: object
+      properties:
+        demon_report:
+          type: string
+        suggested_fix:
+          type: string
