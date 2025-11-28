@@ -1,50 +1,46 @@
 import { useState } from "react";
+import axios from "axios";
+import UploadArea from "./components/UploadArea";
+import Loader from "./components/Loader";
+import Results from "./components/Results";
 
-function App() {
-  const [file, setFile] = useState(null);
-  const [pastedCode, setPastedCode] = useState("");
+export default function App() {
+  const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
-  const handleAnalyze = async () => {
-    const formData = new FormData();
-    if (file) formData.append("uploaded_file", file);
-    if (pastedCode) formData.append("pasted_code", pastedCode);
+  const handleAnalyze = async (file, codeText) => {
+    setLoading(true);
+    setResult(null);
 
-    const response = await fetch("http://127.0.0.1:8000/analyze", {
-      method: "POST",
-      body: formData,
-    });
+    const form = new FormData();
 
-    const data = await response.json();
-    setResult(data);
+    if (file) form.append("uploaded_file", file);
+    else form.append("pasted_code", codeText);
+
+    try {
+      const res = await axios.post(
+        "http://127.0.0.1:8000/analyze",
+        form
+      );
+
+      setResult(res.data);
+    } catch (err) {
+      alert("Backend error! Check console.");
+      console.error(err);
+    }
+
+    setLoading(false);
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>AI Exorcist Debugger 👻</h1>
+    <div className="container">
+      <h1 className="title">🧛‍♂️ AI Exorcist Debugger</h1>
 
-      <h3>Upload a File</h3>
-      <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+      {!loading && <UploadArea onAnalyze={handleAnalyze} />}
 
-      <h3>Or Paste Code</h3>
-      <textarea
-        rows={10}
-        cols={60}
-        value={pastedCode}
-        onChange={(e) => setPastedCode(e.target.value)}
-      />
+      {loading && <Loader />}
 
-      <br /><br />
-      <button onClick={handleAnalyze}>Exorcise Code 👀</button>
-
-      {result && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>Results:</h3>
-          <pre>{JSON.stringify(result, null, 2)}</pre>
-        </div>
-      )}
+      <Results data={result} />
     </div>
   );
 }
-
-export default App;

@@ -1,42 +1,101 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
+  max-width: 1000px;
+  margin: auto;
   padding: 2rem;
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.container {
+  background: rgba(10, 5, 5, 0.85);
+  padding: 40px;
+  border-radius: 20px 20px 0 0; /* Tombstone shape */
+  border: 4px solid #330000;
+  box-shadow: 0 0 50px #55000066, inset 0 0 100px #000;
+  backdrop-filter: blur(5px);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.title {
+  font-size: 4rem;
+  color: #b30000;
+  text-shadow: 0 0 10px #ff0000, 4px 4px 0px #000;
+  margin-bottom: 0.5rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Analysis Cards */
+.analysis-grid {
+  display: grid;
+  gap: 20px;
+  text-align: left;
+  margin-top: 30px;
 }
 
-.card {
-  padding: 2em;
+.demon-card {
+  padding: 20px;
+  border-left: 5px solid;
+  border-radius: 8px;
+  position: relative;
+  transition: transform 0.2s;
+  overflow: hidden;
+}
+.demon-card:hover { transform: scale(1.02); }
+
+/* Severity Colors */
+.type-danger { 
+  border-color: var(--danger-color); 
+  background: var(--danger-bg); 
+  box-shadow: 0 0 15px var(--danger-color);
+}
+.type-warning { 
+  border-color: var(--warning-color); 
+  background: var(--warning-bg);
+  box-shadow: 0 0 15px var(--warning-color);
+}
+.type-info { 
+  border-color: var(--info-color); 
+  background: var(--info-bg);
+  box-shadow: 0 0 15px var(--info-color);
 }
 
-.read-the-docs {
-  color: #888;
+/* Ritual/Fix Section */
+.ritual-box {
+  margin-top: 15px;
+  border-top: 1px dashed rgba(255,255,255,0.2);
+  padding-top: 10px;
+}
+
+.ritual-btn {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: 0.3s;
+  font-size: 1.1rem;
+}
+.ritual-btn:hover {
+  background: #fff;
+  color: #000;
+  box-shadow: 0 0 20px #fff;
+}
+
+.fix-reveal {
+  background: #000;
+  color: #0f0; /* Terminal green */
+  font-family: monospace;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 10px;
+  border: 1px solid #0f0;
+  animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); opacity: 0; }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); opacity: 1;}
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
 }
