@@ -5,13 +5,17 @@ from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
+# Initialize client safely
+try:
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+except:
+    client = None
 
 # ---------------------------------------------
 # BASIC STATIC ANALYSIS
 # ---------------------------------------------
 def basic_static_analysis(code: str):
+    print("⚡ Running Static Analysis...")
     issues = []
 
     # Rule 1: Detect TODOs
@@ -19,7 +23,9 @@ def basic_static_analysis(code: str):
         issues.append({
             "type": "warning",
             "message": "Found TODO comments — unfinished magic detected!",
-            "line": None
+            "line": None,
+            "source": "static",
+            "fix": "Complete the ritual or banish the comment."
         })
 
     # Rule 2: Detect large functions (> 20 lines)
@@ -40,16 +46,20 @@ def basic_static_analysis(code: str):
         if body_lines > 20:
             issues.append({
                 "type": "warning",
-                "message": "A monstrous function (>20 lines) detected. Consider splitting it.",
-                "line": start_line + 1
+                "message": "A monstrous function (>20 lines) detected. It is too powerful!",
+                "line": start_line + 1,
+                "source": "static",
+                "fix": "Split this beast into smaller, weaker helper functions."
             })
 
     # Rule 3: Missing try/except
     if "try:" not in code and "except" not in code:
         issues.append({
-            "type": "info",
-            "message": "No try/except found — errors may haunt your runtime.",
-            "line": None
+            "type": "danger", 
+            "message": "No try/except found — uncaught spirits may crash your runtime.",
+            "line": None,
+            "source": "static",
+            "fix": "Cast a protection circle (try/except block) around risky code."
         })
 
     return issues
@@ -59,42 +69,60 @@ def basic_static_analysis(code: str):
 # AI ANALYSIS (OPENAI GPT MODEL)
 # ---------------------------------------------
 def ai_analysis(code: str):
-    system_prompt = """
-    You are the AI Exorcist Debugger.
-    You MUST return ONLY valid JSON.
+    print("🔮 Contacting OpenAI Spirit Realm...")
     
-    The output format must be:
+    if not client:
+        return {"error": "The Oracle (OpenAI Client) is not initialized. Check API Key."}
+
+    # Enhanced Spooky Persona Prompt
+    system_prompt = """
+    You are the 'AI Exorcist Debugger', an ancient digital entity.
+    Your job is to find bugs in code, which you call 'demons', 'spirits', or 'curses'.
+    
+    You MUST return ONLY valid JSON.
+    Do not include markdown formatting like ```json ... ```.
+    
+    The output format must be a list of objects:
     [
       {
         "type": "danger" | "warning" | "info",
         "line": number or null,
-        "description": "spooky explanation of the problem",
-        "fix": "suggested fix"
+        "description": "Use spooky metaphors. Example: 'This variable is possessed by a null value.'",
+        "fix": "Show the corrected code snippet."
       }
     ]
     """
 
-    user_prompt = f"Analyze this code:\n\n{code}"
+    user_prompt = f"Analyze this cursed code:\n\n{code}"
 
     try:
-        response = client.responses.create(
-            model="gpt-4.1-mini",
-            input=[
+        response = client.chat.completions.create(
+            model="gpt-4o-mini", 
+            messages=[           
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
-            ]
+            ],
+            temperature=0.7
         )
 
-        ai_output = response.output_text.strip()
+        ai_output = response.choices[0].message.content.strip()
+        
+        # Clean up if the AI adds markdown blocks
+        if ai_output.startswith("```"):
+            ai_output = ai_output.strip("`").replace("json", "").strip()
 
-        # Validate that the AI returned valid JSON
-        try:
-            return json.loads(ai_output)
-        except json.JSONDecodeError:
-            return {
-                "error": "AI returned invalid JSON",
-                "raw": ai_output
-            }
+        print(f"👻 AI Response received: {ai_output[:50]}...")
+
+        parsed_results = json.loads(ai_output)
+
+        # 🛡️ FORCE TAGGING:
+        # We manually inject the source tag here so we don't rely on the AI's memory.
+        if isinstance(parsed_results, list):
+            for item in parsed_results:
+                item["source"] = "ai"
+
+        return parsed_results
 
     except Exception as e:
+        print(f"❌ OpenAI Error: {e}")
         return {"error": str(e)}
