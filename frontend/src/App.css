@@ -14,6 +14,8 @@
   border: 4px solid #330000;
   box-shadow: 0 0 50px #55000066, inset 0 0 100px #000;
   backdrop-filter: blur(5px);
+  position: relative;
+  z-index: 2; /* Keep content above blood */
 }
 
 .title {
@@ -21,7 +23,55 @@
   color: #b30000;
   text-shadow: 0 0 10px #ff0000, 4px 4px 0px #000;
   margin-bottom: 0.5rem;
+  /* 1. FLICKER ANIMATION APPLIED */
+  animation: flicker 4s infinite;
 }
+
+/* 1. FLICKER KEYFRAMES */
+@keyframes flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 10px #a29898, 4px 4px 0px #000;
+  }
+  20%, 24%, 55% {
+    opacity: 0.4;
+    text-shadow: none;
+  }
+}
+
+/* 2. BLOOD DRIP BACKGROUND */
+.blood-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.drop {
+  position: absolute;
+  top: -20px;
+  width: 6px;
+  height: 6px;
+  background: #8a0303;
+  border-radius: 50%;
+  opacity: 0;
+  animation: drip 5s linear infinite;
+  box-shadow: 0 0 5px #ff0000;
+}
+
+/* Randomize drop positions/delays using nth-child would be ideal in pure CSS, 
+   but we handle some inline in JSX for randomness */
+@keyframes drip {
+  0% { transform: translateY(-50px); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(110vh); opacity: 0; }
+}
+
 
 /* Analysis Cards */
 .analysis-grid {
