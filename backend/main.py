@@ -7,7 +7,6 @@ from typing import Any, Dict
 # Import your analyzer helpers
 from analyzer import basic_static_analysis, ai_analysis
 
-# Load environment variables
 load_dotenv()
 
 app = FastAPI()
@@ -48,7 +47,7 @@ async def analyze_code(
     # -----------------------------------------
     # 2. BASIC STATIC ANALYSIS (local rules)
     # -----------------------------------------
-    static_results = basic_static_analysis(content)
+    static_results = basic_static_analysis(content, filename)
 
     # -----------------------------------------
     # 3. AI ANALYSIS (OpenAI) via analyzer.ai_analysis

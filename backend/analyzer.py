@@ -5,7 +5,6 @@ from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
-# Initialize client safely
 try:
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 except:
@@ -14,9 +13,12 @@ except:
 # ---------------------------------------------
 # BASIC STATIC ANALYSIS
 # ---------------------------------------------
-def basic_static_analysis(code: str):
+def basic_static_analysis(code: str, filename: str = ""):
     print("⚡ Running Static Analysis...")
     issues = []
+
+    lower_name = filename.lower()
+    is_frontend = lower_name.endswith(('.jsx', '.js', '.tsx', '.ts', '.html', '.css', '.vue', '.dart'))
 
     # Rule 1: Detect TODOs
     if "TODO" in code:
@@ -53,14 +55,23 @@ def basic_static_analysis(code: str):
             })
 
     # Rule 3: Missing try/except
-    if "try:" not in code and "except" not in code:
-        issues.append({
-            "type": "danger", 
-            "message": "No try/except found — uncaught spirits may crash your runtime.",
-            "line": None,
-            "source": "static",
-            "fix": "Cast a protection circle (try/except block) around risky code."
-        })
+    if "try:" not in code and "except" not in code and "try {" not in code and "catch" not in code:
+        if is_frontend:
+             issues.append({
+                "type": "info", 
+                "message": "No try/catch found. Common in UI components, but ensure API calls have error handling.",
+                "line": None,
+                "source": "static",
+                "fix": "Use Error Boundaries or ensure async calls are handled."
+            })
+        else:
+            issues.append({
+                "type": "danger", 
+                "message": "No try/except found — uncaught spirits may crash your runtime.",
+                "line": None,
+                "source": "static",
+                "fix": "Cast a protection circle (try/except block) around risky code."
+            })
 
     return issues
 

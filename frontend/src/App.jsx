@@ -3,7 +3,7 @@ import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 
 // -----------------------------------------------------------------------------
-// 1. CSS STYLES (Injected directly to ensure effects work without file errors)
+// \CSS STYLES
 // -----------------------------------------------------------------------------
 const styles = `
   :root {
@@ -222,11 +222,7 @@ const styles = `
   }
 `;
 
-// -----------------------------------------------------------------------------
-// 2. COMPONENTS
-// -----------------------------------------------------------------------------
 
-// -- Upload Area Component --
 const UploadArea = ({ onAnalyze }) => {
   const [file, setFile] = useState(null);
   const [code, setCode] = useState("");
@@ -263,7 +259,6 @@ const UploadArea = ({ onAnalyze }) => {
   );
 };
 
-// -- Loader Component --
 const Loader = () => {
   return (
     <div style={{ padding: "50px" }}>
@@ -284,8 +279,7 @@ const Loader = () => {
   );
 };
 
-// -- Demon Card Component --
-const DemonCard = ({ item }) => {
+  const DemonCard = ({ item }) => {
   const [revealed, setRevealed] = useState(false);
 
   const handleRitual = () => {
@@ -346,7 +340,7 @@ const DemonCard = ({ item }) => {
   );
 };
 
-// -- Results Component --
+
 const Results = ({ data }) => {
   if (!data) return null;
 
@@ -390,7 +384,7 @@ const Results = ({ data }) => {
 };
 
 // -----------------------------------------------------------------------------
-// 3. MAIN APP LOGIC
+// MAIN APP LOGIC
 // -----------------------------------------------------------------------------
 export default function App() {
   const [loading, setLoading] = useState(false);
