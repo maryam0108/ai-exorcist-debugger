@@ -4,6 +4,8 @@ node_modules/
 # Python environment
 venv/
 .env
+__pycache__/
+*.pyc
 
 # Logs
 *.log

@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 import os
 from typing import Any, Dict
@@ -19,12 +20,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
+@app.get("/api")
 def root():
     return {"message": "AI Exorcist Debugger Backend Running 👻"}
 
 
-@app.post("/analyze")
+@app.post("/api/analyze")
 async def analyze_code(
     uploaded_file: UploadFile = File(None),
     pasted_code: str = Form(None)
@@ -62,3 +63,5 @@ async def analyze_code(
         "static_analysis": static_results,
         "ai_analysis": ai_results
     }
+
+app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="static")

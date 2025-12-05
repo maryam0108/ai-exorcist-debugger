@@ -429,7 +429,7 @@ export default function App() {
     else form.append("pasted_code", codeText);
 
     try {
-      const res = await axios.post("http://127.0.0.1:8000/analyze", form);
+      const res = await axios.post("api/analyze", form);
       setResult(res.data);
       
       const doneSound = new Audio("/sounds/scream.mp3");
